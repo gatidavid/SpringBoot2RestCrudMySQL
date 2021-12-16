@@ -2,6 +2,8 @@ package com.fount.david.service.impl;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +55,16 @@ public class EmployeeServiceImpl implements IEmployeeService {
 	public List<Employee> getAllEmployees() {
 		return repo.findAll();
 		
+	}
+
+
+	@Transactional
+	public void updateEmployeeName(String name, Long id) {
+		if(repo.existsById(id))
+			repo.updateEmployeeName(name, id);
+		else throw new EmployeeNotFoundException(
+				"Employee with id ('"+id+"') does not exist");
+			
 	}
 
 }

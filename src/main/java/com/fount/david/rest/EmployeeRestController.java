@@ -1,5 +1,6 @@
 package com.fount.david.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fount.david.entity.Employee;
 import com.fount.david.exception.EmployeeNotFoundException;
+import com.fount.david.response.MessageResponse;
 import com.fount.david.service.IEmployeeService;
 
 import io.swagger.annotations.Api;
@@ -88,6 +91,34 @@ public class EmployeeRestController {
 			throw enfe;
 		}
 		return response;
+	}
+	
+	/*
+	 * Read id from the given object 
+	 * if id do exist in database then call update 
+	 * else throw exception
+	 */
+	@PatchMapping("/update/{id}/{name}")
+	public MessageResponse updateEmployee(
+			@PathVariable String name,
+			@PathVariable Long id){
+		
+		MessageResponse response = null;
+		
+		try {
+			service.updateEmployeeName(name, id);
+			
+			response = MessageResponse.builder()
+						.date(new Date().toString())
+						.message("Employee Name updated")
+						.status("SUCCESS")
+						.module("EMPLOYEE")
+						.build();
+				
+		} catch (EmployeeNotFoundException e) {
+			throw e;
+		}
+	return response;
 	}
 
 }
